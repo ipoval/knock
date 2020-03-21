@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Knock
   class AuthJwtTokensController < ActionController::API
     rescue_from(Knock.not_found_exception_class_name) do |exception|
@@ -5,6 +7,8 @@ module Knock
     end
 
     before_action :authenticate
+
+    CONTROLLER_SUFFIX = "JwtTokensController".freeze
 
     def create
       render json: auth_token, status: :created
@@ -40,7 +44,7 @@ module Knock
     end
 
     def entity_name
-      self.class.name.scan(/\w+/).last.split('JwtTokensController').first
+      self.class.name.scan(/\w+/).last.split(CONTROLLER_SUFFIX).first
     end
 
     def auth_params
