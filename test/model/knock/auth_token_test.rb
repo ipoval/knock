@@ -3,7 +3,7 @@ require 'jwt'
 require 'timecop'
 
 module Knock
-  class AuthTokenTest < ActiveSupport::TestCase
+  class AuthJwtTokenTest < ActiveSupport::TestCase
     setup do
       key = Knock.token_secret_signature_key.call
       @token = JWT.encode({ sub: '1' }, key, 'HS256')
@@ -13,7 +13,7 @@ module Knock
       Knock.token_signature_algorithm = 'RS256'
 
       assert_raises(JWT::IncorrectAlgorithm) {
-        AuthToken.new(token: @token)
+        AuthJwtToken.new(token: @token)
       }
     end
 
@@ -24,7 +24,7 @@ module Knock
 
       token = JWT.encode({ sub: "1" }, rsa_private, 'RS256')
 
-      assert_nothing_raised { AuthToken.new(token: token) }
+      assert_nothing_raised { AuthJwtToken.new(token: token) }
     end
 
     test "encode tokens with RSA" do
@@ -32,7 +32,7 @@ module Knock
       Knock.token_secret_signature_key = -> { rsa_private }
       Knock.token_signature_algorithm = 'RS256'
 
-      token = AuthToken.new(payload: { sub: '1' }).token
+      token = AuthJwtToken.new(payload: { sub: '1' }).token
 
       payload, header = JWT.decode token, rsa_private.public_key, true, { algorithm: 'RS256' }
       assert_equal payload['sub'], '1'
@@ -43,15 +43,15 @@ module Knock
       Knock.token_audience = -> { 'bar' }
 
       assert_raises(JWT::InvalidAudError) {
-        AuthToken.new token: @token
+        AuthJwtToken.new token: @token
       }
     end
 
     test "validate expiration claim by default" do
-      token = AuthToken.new(payload: { sub: 'foo' }).token
+      token = AuthJwtToken.new(payload: { sub: 'foo' }).token
       Timecop.travel(25.hours.from_now) do
         assert_raises(JWT::ExpiredSignature) {
-          AuthToken.new(token: token)
+          AuthJwtToken.new(token: token)
         }
       end
     end
@@ -59,9 +59,9 @@ module Knock
     test "does not validate expiration claim with a nil token_lifetime" do
       Knock.token_lifetime = nil
 
-      token = AuthToken.new(payload: { sub: 'foo' }).token
+      token = AuthJwtToken.new(payload: { sub: 'foo' }).token
       Timecop.travel(10.years.from_now) do
-        assert_not AuthToken.new(token: token).payload.has_key?('exp')
+        assert_not AuthJwtToken.new(token: token).payload.has_key?('exp')
       end
     end
 
@@ -72,7 +72,7 @@ module Knock
       Knock.token_audience = -> { 'bar' }
       Knock.token_secret_signature_key.call
       assert_raises(JWT::InvalidAudError) {
-        AuthToken.new token: @token, verify_options: verify_options
+        AuthJwtToken.new token: @token, verify_options: verify_options
       }
     end
 
@@ -82,17 +82,17 @@ module Knock
       }
       Knock.token_audience = -> { 'bar' }
       Knock.token_secret_signature_key.call
-      assert_not AuthToken.new(token: @token, verify_options: verify_options).payload.has_key?('aud')
+      assert_not AuthJwtToken.new(token: @token, verify_options: verify_options).payload.has_key?('aud')
     end
 
     test "validate expiration when verify_options[:verify_expiration] is true" do
       verify_options = {
           verify_expiration: true
       }
-      token = AuthToken.new(payload: { sub: 'foo' }).token
+      token = AuthJwtToken.new(payload: { sub: 'foo' }).token
       Timecop.travel(25.hours.from_now) do
         assert_raises(JWT::ExpiredSignature) {
-          AuthToken.new(token: token, verify_options: verify_options)
+          AuthJwtToken.new(token: token, verify_options: verify_options)
         }
       end
     end
@@ -101,22 +101,22 @@ module Knock
       verify_options = {
           verify_expiration: false
       }
-      token = AuthToken.new(payload: { sub: 'foo' }).token
+      token = AuthJwtToken.new(payload: { sub: 'foo' }).token
       Timecop.travel(25.hours.from_now) do
-        assert AuthToken.new(token: token, verify_options: verify_options).payload.has_key?('exp')
+        assert AuthJwtToken.new(token: token, verify_options: verify_options).payload.has_key?('exp')
       end
     end
 
-    test "Knock::AuthToken has all payloads" do
+    test "Knock::AuthJwtToken has all payloads" do
       Knock.token_lifetime = 7.days
 
-      payload = Knock::AuthToken.new(payload: { sub: 'foo' }).payload
+      payload = Knock::AuthJwtToken.new(payload: { sub: 'foo' }).payload
       assert payload.has_key?(:sub)
       assert payload.has_key?(:exp)
     end
 
     test "is serializable" do
-      auth_token = AuthToken.new token: @token
+      auth_token = AuthJwtToken.new token: @token
 
       assert_equal("{\"jwt\":\"#{@token}\"}", auth_token.to_json)
     end
@@ -126,7 +126,7 @@ module Knock
 
       Knock.token_lifetime = lifespan
 
-      auth_token = AuthToken.new
+      auth_token = AuthJwtToken.new
 
       assert auth_token.payload[:exp], lifespan.from_now.to_i
     end
@@ -140,7 +140,7 @@ module Knock
         admin: admin_lifespan
       }
 
-      auth_token = AuthToken.new(entity_class_name: :user)
+      auth_token = AuthJwtToken.new(entity_class_name: :user)
 
       assert auth_token.payload[:exp], user_lifespan.from_now.to_i
     end
@@ -153,7 +153,7 @@ module Knock
         user: user_lifespan,
         admin: admin_lifespan
       }
-      auth_token = Knock::AuthToken.new(entity_class_name: :admin)
+      auth_token = Knock::AuthJwtToken.new(entity_class_name: :admin)
 
       assert auth_token.payload[:exp], admin_lifespan.from_now.to_i
     end

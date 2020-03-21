@@ -1,7 +1,7 @@
 require "jwt"
 
 module Knock
-  class AuthToken
+  class AuthJwtToken
     attr_reader :token
     attr_reader :payload
     attr_reader :entity_class_name
@@ -20,8 +20,8 @@ module Knock
     end
 
     def entity_for(entity_class)
-      if entity_class.respond_to? :from_token_payload
-        entity_class.from_token_payload @payload
+      if entity_class.respond_to? :from_jwt_token_payload
+        entity_class.from_jwt_token_payload @payload
       else
         entity_class.find @payload["sub"]
       end

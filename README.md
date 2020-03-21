@@ -136,14 +136,14 @@ customization over different parts of the authentication process.
 - **Find the entity when creating the token (when signing in)**
 
 By default, Knock tries to find the entity by email. If you want to modify this
-behaviour, implement within your entity model a class method `from_token_request`
+behaviour, implement within your entity model a class method `from_jwt_token_request`
 that takes the request in argument.
 
 E.g.
 
 ```ruby
 class User < ActiveRecord::Base
-  def self.from_token_request request
+  def self.from_jwt_token_request request
     # Returns a valid user, `nil` or raise `Knock.not_found_exception_class_name`
     # e.g.
     #   email = request.params["auth"] && request.params["auth"]["email"]
@@ -270,7 +270,7 @@ e.g.
 ```ruby
 class SecuredResourcesControllerTest < ActionDispatch::IntegrationTest
   def authenticated_header
-    token = Knock::AuthToken.new(payload: { sub: users(:one).id }).token
+    token = Knock::AuthJwtToken.new(payload: { sub: users(:one).id }).token
 
     {
       'Authorization': "Bearer #{token}"

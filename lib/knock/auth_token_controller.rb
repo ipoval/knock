@@ -1,7 +1,7 @@
 require_dependency "knock/application_controller"
 
 module Knock
-  class AuthTokenController < ApplicationController
+  class AuthJwtTokenController < ApplicationController
     before_action :authenticate
 
     def create
@@ -18,16 +18,16 @@ module Knock
 
     def auth_token
       if entity.respond_to? :to_token_payload
-        AuthToken.new payload: entity.to_token_payload
+        AuthJwtToken.new payload: entity.to_token_payload
       else
-        AuthToken.new payload: { sub: entity.id }
+        AuthJwtToken.new payload: { sub: entity.id }
       end
     end
 
     def entity
       @entity ||=
-        if entity_class.respond_to? :from_token_request
-          entity_class.from_token_request request
+        if entity_class.respond_to? :from_jwt_token_request
+          entity_class.from_jwt_token_request request
         else
           entity_class.find_by email: auth_params[:email]
         end
@@ -38,7 +38,7 @@ module Knock
     end
 
     def entity_name
-      self.class.name.scan(/\w+/).last.split('TokenController').first
+      self.class.name.scan(/\w+/).last.split('TokensController').first
     end
 
     def auth_params

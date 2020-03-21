@@ -3,7 +3,7 @@ require 'test_helper'
 class CurrentUsersControllerTest < ActionController::TestCase
   setup do
     @user = users(:one)
-    @token = Knock::AuthToken.new(payload: { sub: @user.id }).token
+    @token = Knock::AuthJwtToken.new(payload: { sub: @user.id }).token
   end
 
   def authenticate token: @token

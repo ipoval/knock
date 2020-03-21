@@ -30,7 +30,7 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Added
 
-- Configurable default validations by adding `verify_options` parameter to AuthToken initializer
+- Configurable default validations by adding `verify_options` parameter to AuthJwtToken initializer
 
 ## [2.0] - 2016-10-23
 
@@ -54,10 +54,6 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 
 ### Changed
 
-- Deprecated `Authenticable#authenticate` in favor of `Authenticable#authenticate_user`
-- Deprecated use of `Knock.current_user_from_token` in favor of `User.from_jwt_token_payload`
-- Deprecated use of direct route to `AuthTokenController` in favor of generating a token controller
-- No need to mount the engine in `config/routes.rb` anymore
 
 ## [1.4.2] - 2016-01-29
 
@@ -135,5 +131,5 @@ This project adheres to [Semantic Versioning](http://semver.org/).
 ### Added
 
 - `Knock::Authenticable` to secure endpoints with `before_action :authenticate`
-- `AuthToken` model provides JWT encapsulation
-- `AuthTokenController` provides out of the box sign in implementation
+- `AuthJwtToken` model provides JWT encapsulation
+- `AuthJwtTokenController` provides out of the box sign in implementation

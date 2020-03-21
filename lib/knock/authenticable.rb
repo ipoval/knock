@@ -77,7 +77,7 @@ module Knock
     end
 
     def fetch_entity_from_jwt_token(entity_class)
-      Knock::AuthToken.new(token: token).entity_for(entity_class)
+      Knock::AuthJwtToken.new(token: token).entity_for(entity_class)
     rescue Knock.not_found_exception_class, JWT::DecodeError, JWT::EncodeError
       nil
     end

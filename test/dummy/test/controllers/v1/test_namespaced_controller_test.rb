@@ -9,7 +9,7 @@ module Knock
     end
 
     test "allow namespaced models" do
-      token = Knock::AuthToken.new(payload: { sub: @user.id }).token
+      token = Knock::AuthJwtToken.new(payload: { sub: @user.id }).token
       get v1_test_namespaced_index_url, headers: {'Authorization': "Bearer #{token}"}
       assert_response :ok
       assert_equal @user, @controller.current_v1_user

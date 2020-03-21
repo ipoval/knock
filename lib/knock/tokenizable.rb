@@ -1,7 +1,7 @@
 # frozen_string_literal: true
+
 module Knock
-  # Include this module in your entity class (e.g. User)
-  # for token serialization and deserialization.
+  # Include into entity class (e.g. User) for token serialization, deserialization
   module Tokenizable
     def self.included(base)
       base.extend ClassMethods
@@ -12,9 +12,8 @@ module Knock
         find(payload["sub"])
       end
 
-      def from_token(token)
-        auth_token = AuthToken.new(token: token)
-        from_jwt_token_payload(auth_token.payload)
+      def from_jwt_token(t)
+        from_jwt_token_payload(AuthJwtToken.new(token: t).payload)
       end
     end
 
@@ -23,7 +22,7 @@ module Knock
     end
 
     def to_token
-      AuthToken.new(payload: to_token_payload).token
+      AuthJwtToken.new(payload: to_token_payload).token
     end
   end
 end
