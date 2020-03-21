@@ -40,7 +40,7 @@ module Knock
     end
 
     def entity_name
-      self.class.name.scan(/\w+/).last.split('TokensController').first
+      self.class.name.scan(/\w+/).last.split('JwtTokensController').first
     end
 
     def auth_params
