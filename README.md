@@ -156,14 +156,14 @@ end
 
 By default, Knock assumes the payload as a subject (`sub`) claim containing the entity's id
 and calls `find` on the model. If you want to modify this behaviour, implement within
-your entity model a class method `from_token_payload` that takes the
+your entity model a class method `from_jwt_token_payload` that takes the
 payload in argument.
 
 E.g.
 
 ```ruby
 class User < ActiveRecord::Base
-  def self.from_token_payload payload
+  def self.from_jwt_token_payload payload
     # Returns a valid user, `nil` or raise
     # e.g.
     #   self.find payload["sub"]

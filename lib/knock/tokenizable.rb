@@ -4,17 +4,17 @@ module Knock
   # for token serialization and deserialization.
   module Tokenizable
     def self.included(base)
-      base.extends ClassMethods
+      base.extend ClassMethods
     end
 
     module ClassMethods
-      def from_token_payload(payload)
+      def from_jwt_token_payload(payload)
         find(payload["sub"])
       end
 
       def from_token(token)
         auth_token = AuthToken.new(token: token)
-        from_token_payload(auth_token.payload)
+        from_jwt_token_payload(auth_token.payload)
       end
     end
 

@@ -6,7 +6,7 @@ class Admin < ActiveRecord::Base
     self.find_by email: email
   end
 
-  def self.from_token_payload payload
+  def self.from_jwt_token_payload payload
     self.find payload["sub"]
   end
 
