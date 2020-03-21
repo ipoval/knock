@@ -15,6 +15,6 @@ module Knock
       end
     end
 
-    alias jwt_meta_tag jwt_meta_tags
+    alias jwt_meta_tags jwt_meta_tag
   end
 end
