@@ -26,11 +26,11 @@ module Knock
     end
 
     def method_missing(method, *args)
-      prefix, entity_name = method.to_s.split("_", 2)
-      case prefix
-      when "authenticate_jwt"
+      entity_name = method.to_s.split("_").last
+
+      if method.to_s.starts_with?("authenticate_jwt")
         unauthorized_entity(entity_name) unless authenticate_jwt_entity(entity_name)
-      when "current_jwt"
+      elsif method.to_s.starts_with?("current_jwt")
         authenticate_jwt_entity(entity_name)
       else
         super
@@ -38,9 +38,7 @@ module Knock
     end
 
     def respond_to_missing?(method, *)
-      prefix, = method.to_s.split("_", 2)
-      case prefix
-      when "authenticate_jwt"
+      if method.to_s.starts_with?("authenticate_jwt")
         true
       else
         super
