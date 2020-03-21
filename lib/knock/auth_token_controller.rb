@@ -1,7 +1,11 @@
 require_dependency "knock/application_controller"
 
 module Knock
-  class AuthJwtTokenController < ApplicationController
+  class AuthJwtTokenController < ActionController::API
+    rescue_from(Knock.not_found_exception_class_name) do |exception|
+      head :not_found
+    end
+
     before_action :authenticate
 
     def create
