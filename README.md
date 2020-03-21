@@ -175,13 +175,13 @@ end
 
 By default the token payload contains the entity's id inside the subject (`sub`) claim.
 If you want to modify this behaviour, implement within your entity model an instance method
-`to_token_payload` that returns a hash representing the payload.
+`to_jwt_token_payload` that returns a hash representing the payload.
 
 E.g.
 
 ```ruby
 class User < ActiveRecord::Base
-  def to_token_payload
+  def to_jwt_token_payload
     # Returns the payload as a hash
   end
 end

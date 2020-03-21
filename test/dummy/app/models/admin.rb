@@ -10,7 +10,7 @@ class Admin < ActiveRecord::Base
     self.find payload["sub"]
   end
 
-  def to_token_payload
+  def to_jwt_token_payload
     {sub: id}
   end
 end

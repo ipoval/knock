@@ -17,12 +17,12 @@ module Knock
       end
     end
 
-    def to_token_payload
+    def to_jwt_token_payload
       { sub: @object.id }
     end
 
-    def to_token
-      AuthJwtToken.new(payload: to_token_payload).token
+    def to_jwt_token
+      AuthJwtToken.new(payload: to_jwt_token_payload).token
     end
   end
 end

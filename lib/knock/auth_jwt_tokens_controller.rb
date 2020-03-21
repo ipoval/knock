@@ -1,5 +1,3 @@
-require_dependency "knock/application_controller"
-
 module Knock
   class AuthJwtTokenController < ActionController::API
     rescue_from(Knock.not_found_exception_class_name) do |exception|
@@ -21,8 +19,8 @@ module Knock
     end
 
     def auth_token
-      if entity.respond_to? :to_token_payload
-        AuthJwtToken.new payload: entity.to_token_payload
+      if entity.respond_to? :to_jwt_token_payload
+        AuthJwtToken.new payload: entity.to_jwt_token_payload
       else
         AuthJwtToken.new payload: { sub: entity.id }
       end

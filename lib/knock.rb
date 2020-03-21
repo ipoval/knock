@@ -1,4 +1,5 @@
 require "knock/engine"
+require "jwt"
 
 module Knock
   # How long before a token is expired. If nil is provided,

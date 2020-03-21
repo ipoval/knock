@@ -1,5 +1,3 @@
-require "jwt"
-
 module Knock
   class AuthJwtToken
     attr_reader :token
