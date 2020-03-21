@@ -23,7 +23,7 @@ module Knock
     end
 
     def to_jwt_token_payload
-      { sub: @object.id }
+      { sub: self.id }
     end
 
     def to_jwt_token
