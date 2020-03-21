@@ -2,21 +2,19 @@
 
 module Knock
   module ViewHelper
-    # Returns a meta tag with JWT token to be used for safe front-end APIs
+    # Returns meta tags with JWT tokens to be used for safe front-end APIs
     #   <head>
-    #     <%= jwt_meta_tag %>
+    #     <%= jwt_meta_tags %>
     #   </head>
     #
     def jwt_meta_tag(**options)
-      if allow_jwt_meta_tag?
-        options[:name] ||= "jwt-token-frontend"
-        options[:content] ||= ""
-        tag("meta", options)
+      if defined?(jwt_tokens_for_browser) && jwt_tokens_for_browser.present?
+        jwt_tokens_for_browser.map { |k, v|
+          tag("meta", name: k, content: v)
+        }.join("\n").html_safe
       end
     end
 
-    def allow_jwt_meta_tag?
-      @allow_jwt_meta_tag.present?
-    end
+    alias jwt_meta_tag jwt_meta_tags
   end
 end
