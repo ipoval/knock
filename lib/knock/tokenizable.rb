@@ -15,6 +15,11 @@ module Knock
       def from_jwt_token(t)
         from_jwt_token_payload(AuthJwtToken.new(token: t).payload)
       end
+
+      def from_token_request(request)
+        email = request.params["auth"] && request.params["auth"]["email"]
+        self.find_by email: email
+      end
     end
 
     def to_jwt_token_payload
