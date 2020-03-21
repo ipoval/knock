@@ -1,3 +1,3 @@
 Knock::Engine.routes.draw do
-  post 'auth_token' => 'auth_token#create'
+  post '/api/v1/auth_jwt_tokens' => 'auth_jwt_tokens#create'
 end
