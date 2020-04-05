@@ -2,6 +2,6 @@
 
 module Knock
   class Version
-    VERSION = "102.2.0"
+    VERSION = "2.1.1"
   end
 end
