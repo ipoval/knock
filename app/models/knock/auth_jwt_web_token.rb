@@ -8,11 +8,11 @@ module Knock
 
     # Knock::AuthJwtWebToken.encode({ sub: 1 })
     def self.encode(payload)
-      JWT.encode payload, jwt_secret_key
+      JWT.encode payload, Knock::JwtSecretKey.jwt_secret_key
     end
 
     def self.decode(payload)
-      JWT.decode token, jwt_secret_key
+      JWT.decode token, Knock::JwtSecretKey.jwt_secret_key
     end
   end
 end
