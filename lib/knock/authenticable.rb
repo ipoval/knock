@@ -8,15 +8,9 @@ module Knock
   # Calling `authenticate_jwt_user` will try to find a valid `User` based on
   # the token payload.
   module Authenticable
+    include JwtTokenFromRequest
+
     private
-
-    def jwt_token
-      params[:jwt_token] || jwt_token_from_request_headers
-    end
-
-    def jwt_token_from_request_headers
-      request.headers["Authorization"]&.split&.last
-    end
 
     def authenticate_jwt_for(entity_class)
       getter_name = "current_jwt_#{entity_class.to_s.parameterize.underscore}"
@@ -47,7 +41,6 @@ module Knock
 
     def authenticate_jwt_entity(entity_name)
       return unless jwt_token
-
       entity_class = entity_name.camelize.constantize
       authenticate_jwt_for(entity_class)
     end
