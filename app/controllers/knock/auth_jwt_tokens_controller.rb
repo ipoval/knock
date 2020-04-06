@@ -2,13 +2,13 @@
 
 module Knock
   class AuthJwtTokensController < ActionController::API
+    CONTROLLER_SUFFIX = "JwtTokensController".freeze
+
     rescue_from(Knock.not_found_exception_class_name) do |exception|
       head :not_found
     end
 
     before_action :authenticate
-
-    CONTROLLER_SUFFIX = "JwtTokensController".freeze
 
     def create
       render json: auth_token, status: :created

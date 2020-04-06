@@ -1,21 +1,24 @@
+# frozen_string_literal: true
+
 require "jwt"
 
 module Knock
   class AuthJwtToken
+    include Knock::JwtSecretKey
+
     attr_reader :token
     attr_reader :payload
     attr_reader :entity_class_name
 
     def initialize(payload: {}, token: nil, verify_options: {}, entity_class_name: nil)
       @entity_class_name = entity_class_name
+
       if token.present?
         @payload, _ = JWT.decode token.to_s, decode_key, true, options.merge(verify_options)
         @token = token
       else
         @payload = claims.merge(payload)
-        @token = JWT.encode @payload,
-                            secret_key,
-                            Knock.token_signature_algorithm
+        @token = JWT.encode @payload, jwt_secret_key, Knock.token_signature_algorithm
       end
     end
 
@@ -33,12 +36,8 @@ module Knock
 
     private
 
-    def secret_key
-      Knock.token_secret_signature_key.call
-    end
-
     def decode_key
-      Knock.token_public_key || secret_key
+      Knock.token_public_key || jwt_secret_key
     end
 
     def options
