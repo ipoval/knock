@@ -53,6 +53,14 @@ module Knock
       _claims
     end
 
+    def verify_claims
+      {
+        aud: token_audience,
+        verify_aud: verify_audience?,
+        verify_expiration: verify_lifetime?,
+      }
+    end
+
     def token_lifetime
       return unless verify_lifetime?
 
@@ -63,20 +71,12 @@ module Knock
       end
     end
 
-    def verify_lifetime?
-      !Knock.token_lifetime.nil?
-    end
-
-    def verify_claims
-      {
-        aud: token_audience,
-        verify_aud: verify_audience?,
-        verify_expiration: verify_lifetime?,
-      }
-    end
-
     def token_audience
       verify_audience? && Knock.token_audience.call
+    end
+
+    def verify_lifetime?
+      !Knock.token_lifetime.nil?
     end
 
     def verify_audience?
